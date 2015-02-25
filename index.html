@@ -1,0 +1,187 @@
+﻿<html>
+<body>
+    <script type="text/javascript">
+        var Examples = {
+            logDate: function logWithDate(message) {
+                console.log(message + new Date().getMilliseconds());
+            },
+            startExample: function startExample(name) {
+                console.log('=== ' + name);
+            }
+        };
+
+        (function () {
+            Examples.startExample('Example 1');
+            var arr = ['', 'xx'];
+            console.log(arr);
+        });//();
+
+        (function () {
+            Examples.startExample('Function hoisting');
+
+            first();
+
+            // this function is never executed
+            function first() {
+                Examples.logDate('First: ' + new Date());
+            }
+            first();
+
+            function first() {
+                Examples.logDate('First again: ' + new Date());
+            }
+            first();
+        });//();
+
+        (function () {
+            Examples.startExample('Function hoisting 2');
+
+            var f = function g() {
+                console.log(1);                
+            };
+            if (false) {
+                f = function g() {
+                    console.log(2);
+                };
+            }
+            f(); // 2
+            g() // reference error (IE7 OK, evaluated as 2)
+        });//();
+
+        (function () {
+            Examples.startExample('Variable hoisting');
+
+            console.log('x = ' + x); // x = undefined
+
+            var x = 1;
+
+            console.log('x = ' + x); // x = 1
+        });//();
+
+        (function () {
+            Examples.startExample('Variable scoping - for cycle');
+            for (var i = 1; i < 10; i++) {
+                //something
+            };
+            console.log('i = ' + i); // i = 10
+        });//();
+
+        (function () {
+            Examples.startExample('Variable scoping - if block');
+            if ('a') {
+                var i = 1;
+            };
+            console.log('i = ' + i); // i = 1
+        });//();
+
+        (function () {
+            Examples.startExample('Variable scoping - function');
+
+            var exec = function () {
+                for (var i = 1; i < 10; i++) {
+                    //something
+                };
+            }
+            //console.log('i = ' + i); // ReferenceError: i is not defined
+            exec();
+            console.log('i = ' + i); // ReferenceError: i is not defined
+        });//();
+
+        (function () {
+            Examples.startExample('Closures');
+
+            var i = 1;
+            console.log('Before fcn expr: i = ' + i); // i = 1
+            var exec = function () {
+                i = 10;
+            }
+            console.log('After fcn expr: i = ' + i); // i = 1
+
+            exec();
+            console.log('After fcn execution: i = ' + i); // i = 10
+        });//();
+
+        (function () {
+            Examples.startExample('Closures overriding');
+
+            var i = 1;
+            console.log('Before fcn expr: i = ' + i); // i = 1
+            var exec = function () {
+                var i = 10; // local variable overrides a reference (not a value) of 'i' variable reference in outer scope
+            }
+            console.log('After fcn expr: i = ' + i); // i = 1
+
+            exec();
+            console.log('After fcn execution: i = ' + i); // i = 1
+        });//();
+
+        (function () {
+            Examples.startExample('Function constructors');
+
+            window.name = undefined;
+            var exec = function exec(name) {
+                console.log('Exec called with name=' + name);
+                this.name = name;
+            }
+
+            var instance = new exec('first');
+            console.log('instance.constructor === exec: ' + (instance.constructor === exec)); // true
+            console.log('instance.name: ' + instance.name);
+
+            console.log('name (before): ' + name); // undefined
+            exec('isolated'); // exec is called with global scope
+            console.log('name (after): ' + name); // isolated
+
+            var obj = {};
+            console.log('obj name (before): ' + obj.name); // undefined
+            exec.call(obj, 'second');
+            console.log('obj name (after): ' + obj.name); // second
+            console.log('obj.constructor === Object: ' + (obj.constructor === Object)); // true
+            
+            var x = exec;
+            var y = new x('third');
+            console.log('y.constructor === exec: ' + (y.constructor === exec)); // true
+        });//();
+
+        (function () {
+            Examples.startExample('Function prototypes');
+
+            var arr = [];
+            var arr2 = new Array();
+
+            console.log('arr.__proto__ === arr2.__proto__ : ' + (arr.__proto__ === arr2.__proto__)); // true
+            console.log('arr.__proto__ === Array.prototype : ' + (arr.__proto__ === Array.prototype)); // true
+
+            console.log('arr.instanceProtoFcn : ' + arr.instanceProtoFcn); // is defined
+            console.log('Array.instanceProtoFcn : ' + Array.instanceProtoFcn); // is NOT defined
+
+            console.log('arr.generalPrototypeFcn : ' + arr.generalPrototypeFcn); // is defined
+            console.log('Array.generalPrototypeFcn : ' + Array.generalPrototypeFcn); // is NOT defined
+        });//();
+
+        (function () {
+            Examples.startExample('Prototypes: instance variables')
+
+            Object.prototype.myProperty = 'prototype property';
+
+            var instance = {};
+
+            console.log('instance.myProperty === Object.prototype.myProperty: ' + (instance.myProperty === Object.prototype.myProperty)); // true
+            console.log('instance.myProperty: ' + instance.myProperty); // 'prototype property'
+            console.log("instance.hasOwnProperty('myProperty'): " + instance.hasOwnProperty('myProperty')); // false
+
+            instance.myProperty = 'instance property';
+
+            console.log('instance.myProperty === Object.prototype.myProperty: ' + (instance.myProperty === Object.prototype.myProperty)); // false
+            console.log('instance.myProperty: ' + instance.myProperty); // 'instance property'
+            console.log('Object.prototype.myProperty: ' + Object.prototype.myProperty); // 'prototype property'
+            console.log("instance.hasOwnProperty('myProperty'): " + instance.hasOwnProperty('myProperty')); // true
+
+            debugger;
+        })();
+
+        // TODO Function bind
+        // TODO Function apply and call
+    </script>
+</body>
+</html>
